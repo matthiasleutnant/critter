@@ -4,7 +4,9 @@ import com.udacity.jdnd.course3.critter.user.dto.CustomerDTO;
 import com.udacity.jdnd.course3.critter.user.dto.EmployeeDTO;
 import com.udacity.jdnd.course3.critter.user.dto.EmployeeRequestDTO;
 import com.udacity.jdnd.course3.critter.user.entity.Customer;
+import com.udacity.jdnd.course3.critter.user.entity.Employee;
 import com.udacity.jdnd.course3.critter.user.service.CustomerService;
+import com.udacity.jdnd.course3.critter.user.service.EmployeeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +18,7 @@ import java.util.Set;
 
 /**
  * Handles web requests related to Users.
- *
+ * <p>
  * Includes requests for both customers and employees. Splitting this into separate user and customer controllers
  * would be fine too, though that is not part of the required scope for this class.
  */
@@ -25,40 +27,46 @@ import java.util.Set;
 public class UserController {
     @Autowired
     CustomerService customerService;
+    @Autowired
+    EmployeeService employeeService;
 
     @PostMapping("/customer")
-    public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO){
-        CustomerDTO customer = convertCustomerToCustomerDTO(customerService.save(convertCustomerDTOToCustomer(customerDTO)));
+    public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {
+        CustomerDTO customer = convertCustomerToCustomerDTO(
+                customerService.save(convertCustomerDTOToCustomer(customerDTO)));
         return customer;
     }
 
     @GetMapping("/customer")
-    public List<CustomerDTO> getAllCustomers(){
+    public List<CustomerDTO> getAllCustomers() {
         List<CustomerDTO> result = new ArrayList<>();
         customerService.getAllCustomers().stream().forEach(
-                customerDTO -> {result.add(convertCustomerToCustomerDTO(customerDTO));});
+                customerDTO -> {
+                    result.add(convertCustomerToCustomerDTO(customerDTO));
+                });
         return result;
     }
 
     @GetMapping("/customer/pet/{petId}")
-    public CustomerDTO getOwnerByPet(@PathVariable long petId){
+    public CustomerDTO getOwnerByPet(@PathVariable long petId) {
         throw new UnsupportedOperationException();
     }
 
     @PostMapping("/employee")
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
-
-        throw new UnsupportedOperationException();
+        EmployeeDTO employee = convertEmployeeToEmployeeDTO(
+                employeeService.save(convertEmployeeDTOToEmployee(employeeDTO)));
+        return employee;
     }
 
-    @PostMapping("/employee/{employeeId}")
+    @GetMapping("/employee/{employeeId}")
     public EmployeeDTO getEmployee(@PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+        return convertEmployeeToEmployeeDTO(employeeService.getEmployee(employeeId));
     }
 
     @PutMapping("/employee/{employeeId}")
     public void setAvailability(@RequestBody Set<DayOfWeek> daysAvailable, @PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+        employeeService.updateAvailabilty(employeeId, daysAvailable);
     }
 
     @GetMapping("/employee/availability")
@@ -66,15 +74,27 @@ public class UserController {
         throw new UnsupportedOperationException();
     }
 
-    private CustomerDTO convertCustomerToCustomerDTO(Customer customer){
+    private CustomerDTO convertCustomerToCustomerDTO(Customer customer) {
         CustomerDTO customerDTO = new CustomerDTO();
         BeanUtils.copyProperties(customer, customerDTO);
         return customerDTO;
     }
 
-    private Customer convertCustomerDTOToCustomer(CustomerDTO customerDTO){
+    private Customer convertCustomerDTOToCustomer(CustomerDTO customerDTO) {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerDTO, customer);
         return customer;
+    }
+
+    private EmployeeDTO convertEmployeeToEmployeeDTO(Employee employee) {
+        EmployeeDTO employeeDTO = new EmployeeDTO();
+        BeanUtils.copyProperties(employee, employeeDTO);
+        return employeeDTO;
+    }
+
+    private Employee convertEmployeeDTOToEmployee(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+        return employee;
     }
 }
