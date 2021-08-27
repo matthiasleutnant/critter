@@ -1,13 +1,12 @@
 package com.udacity.jdnd.course3.critter.user.service;
 
-import com.udacity.jdnd.course3.critter.exception.EmplyeeNotAvailableException;
+import com.udacity.jdnd.course3.critter.exception.EmployeeNotAvailableException;
 import com.udacity.jdnd.course3.critter.user.entity.Employee;
 import com.udacity.jdnd.course3.critter.user.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,7 +20,13 @@ public class EmployeeService {
     }
 
     public Employee getEmployee(Long id){
-        return employeeRepository.getOne(id);
+        Optional<Employee> employee = employeeRepository.findById(id);
+        if(employee.isPresent()){
+            return employee.get();
+        }
+        else {
+            throw new EmployeeNotAvailableException(id);
+        }
     }
 
     public void updateAvailabilty(Long id, Set<DayOfWeek> daysAvailable){
@@ -31,7 +36,7 @@ public class EmployeeService {
             employeeRepository.save(emplyee.get());
         }
         else{
-            throw new EmplyeeNotAvailableException();
+            throw new EmployeeNotAvailableException(id);
         }
     }
 }

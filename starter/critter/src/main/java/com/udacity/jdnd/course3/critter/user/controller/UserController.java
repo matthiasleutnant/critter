@@ -1,5 +1,7 @@
 package com.udacity.jdnd.course3.critter.user.controller;
 
+import com.udacity.jdnd.course3.critter.pet.Pet;
+import com.udacity.jdnd.course3.critter.pet.PetService;
 import com.udacity.jdnd.course3.critter.user.dto.CustomerDTO;
 import com.udacity.jdnd.course3.critter.user.dto.EmployeeDTO;
 import com.udacity.jdnd.course3.critter.user.dto.EmployeeRequestDTO;
@@ -29,6 +31,8 @@ public class UserController {
     CustomerService customerService;
     @Autowired
     EmployeeService employeeService;
+    @Autowired
+    PetService petService;
 
     @PostMapping("/customer")
     public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {
@@ -77,12 +81,26 @@ public class UserController {
     private CustomerDTO convertCustomerToCustomerDTO(Customer customer) {
         CustomerDTO customerDTO = new CustomerDTO();
         BeanUtils.copyProperties(customer, customerDTO);
+        List<Long> petList = new ArrayList<>();
+        if (customer.getPets() != null) {
+            for (Pet p : customer.getPets()) {
+                petList.add(p.getId());
+            }
+        }
+        customerDTO.setPetIds(petList);
         return customerDTO;
     }
 
     private Customer convertCustomerDTOToCustomer(CustomerDTO customerDTO) {
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerDTO, customer);
+        List<Pet> petList = new ArrayList<>();
+        if (customerDTO.getPetIds() != null) {
+            for (Long id : customerDTO.getPetIds()) {
+                petList.add(petService.getPet(id));
+            }
+        }
+        customer.setPets(petList);
         return customer;
     }
 
