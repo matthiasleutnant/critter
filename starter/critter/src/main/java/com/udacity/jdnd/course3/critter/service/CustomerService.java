@@ -22,20 +22,26 @@ public class CustomerService {
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
+
     public Customer findCustomerById(Long Id) {
         Optional<Customer> customer = customerRepository.findById(Id);
-        if(customer.isPresent()){
+        if (customer.isPresent()) {
             return customer.get();
-        }
-        else{
+        } else {
             throw new CustomerNotAvailableException(Id);
         }
     }
 
-    public void addPetToCustomer(Pet pet,Customer customer){
+    public void addPetToCustomer(Pet pet, Customer customer) {
         List<Pet> petList = customer.getPets();
-        if(!petList.contains(pet)) {
+        if (!petList.contains(pet)) {
             petList.add(pet);
         }
+        pet.setCustomer(customer);
+    }
+
+    public void addPetToCustomerByCustomerId(Pet pet, Long customerId) {
+        Customer customer = findCustomerById(customerId);
+        addPetToCustomer(pet,customer);
     }
 }
