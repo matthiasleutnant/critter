@@ -1,8 +1,8 @@
-package com.udacity.jdnd.course3.critter.user.service;
+package com.udacity.jdnd.course3.critter.service;
 
 import com.udacity.jdnd.course3.critter.exception.EmployeeNotAvailableException;
-import com.udacity.jdnd.course3.critter.user.entity.Employee;
-import com.udacity.jdnd.course3.critter.user.repository.EmployeeRepository;
+import com.udacity.jdnd.course3.critter.entity.Employee;
+import com.udacity.jdnd.course3.critter.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
