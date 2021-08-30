@@ -9,6 +9,7 @@ import com.udacity.jdnd.course3.critter.dto.EmployeeDTO;
 import com.udacity.jdnd.course3.critter.dto.EmployeeRequestDTO;
 import com.udacity.jdnd.course3.critter.entity.Employee;
 import com.udacity.jdnd.course3.critter.service.CustomerService;
+import org.h2.engine.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Handles web requests related to Users.
@@ -45,8 +47,8 @@ public class UserController {
     public List<CustomerDTO> getAllCustomers() {
         List<CustomerDTO> result = new ArrayList<>();
         customerService.getAllCustomers().stream().forEach(
-                customerDTO -> {
-                    result.add(convertCustomerToCustomerDTO(customerDTO));
+                customer -> {
+                    result.add(convertCustomerToCustomerDTO(customer));
                 });
         return result;
     }
@@ -75,7 +77,8 @@ public class UserController {
 
     @GetMapping("/employee/availability")
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
-        throw new UnsupportedOperationException();
+        return employeeService.findBySkillAndDays(employeeDTO.getSkills(), employeeDTO.getDate().getDayOfWeek())
+                .stream().map(UserController::convertEmployeeToEmployeeDTO).collect(Collectors.toList());
     }
 
     private CustomerDTO convertCustomerToCustomerDTO(Customer customer) {
@@ -104,13 +107,13 @@ public class UserController {
         return customer;
     }
 
-    private EmployeeDTO convertEmployeeToEmployeeDTO(Employee employee) {
+    private static EmployeeDTO convertEmployeeToEmployeeDTO(Employee employee) {
         EmployeeDTO employeeDTO = new EmployeeDTO();
         BeanUtils.copyProperties(employee, employeeDTO);
         return employeeDTO;
     }
 
-    private Employee convertEmployeeDTOToEmployee(EmployeeDTO employeeDTO) {
+    private static Employee convertEmployeeDTOToEmployee(EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee);
         return employee;

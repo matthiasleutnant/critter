@@ -20,4 +20,12 @@ public class ScheduleService {
     public Schedule save(Schedule schedule) {
         return scheduleRepository.save(schedule);
     }
+
+    public List<Schedule> findAllByPetId(Long petId) {
+        return scheduleRepository.findAllByPetId(petId);
+    }
+
+    public List<Schedule> findAllByEmployeeId(Long employeeId) {
+        return scheduleRepository.findAllByEmployeeId(employeeId);
+    }
 }

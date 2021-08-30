@@ -12,16 +12,16 @@ import java.util.Optional;
 public class PetService {
     @Autowired
     PetRepository petRepository;
-    public Pet save(Pet pet){
+
+    public Pet save(Pet pet) {
         return petRepository.save(pet);
     }
 
-    public Pet getPet(long id){
+    public Pet getPet(long id) {
         Optional<Pet> pet = petRepository.findById(id);
-        if(pet.isPresent()){
+        if (pet.isPresent()) {
             return pet.get();
-        }
-        else {
+        } else {
             throw new PetNotAvailableExeption(id);
         }
     }
