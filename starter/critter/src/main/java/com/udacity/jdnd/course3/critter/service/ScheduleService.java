@@ -1,6 +1,9 @@
 package com.udacity.jdnd.course3.critter.service;
 
+import com.udacity.jdnd.course3.critter.entity.Customer;
+import com.udacity.jdnd.course3.critter.entity.Pet;
 import com.udacity.jdnd.course3.critter.entity.Schedule;
+import com.udacity.jdnd.course3.critter.repository.EmployeeRepository;
 import com.udacity.jdnd.course3.critter.repository.ScheduleRepository;
 
 import java.util.List;
@@ -12,6 +15,12 @@ import org.springframework.stereotype.Service;
 public class ScheduleService {
     @Autowired
     ScheduleRepository scheduleRepository;
+    @Autowired
+    PetService petService;
+    @Autowired
+    EmployeeService employeeService;
+    @Autowired
+    CustomerService customerService;
 
     public List<Schedule> findAll() {
         return scheduleRepository.findAll();
@@ -22,10 +31,15 @@ public class ScheduleService {
     }
 
     public List<Schedule> findAllByPetId(Long petId) {
-        return scheduleRepository.findAllByPetId(petId);
+        return scheduleRepository.findAllByPets(petService.getPet(petId));
     }
 
     public List<Schedule> findAllByEmployeeId(Long employeeId) {
-        return scheduleRepository.findAllByEmployeeId(employeeId);
+        return scheduleRepository.findAllByEmployees(employeeService.getEmployee(employeeId));
+    }
+
+    public List<Schedule> findByCustomerId(Long customerId) {
+        Customer customer = customerService.findCustomerById(customerId);
+        return scheduleRepository.findAllByPetsIn(customer.getPets());
     }
 }

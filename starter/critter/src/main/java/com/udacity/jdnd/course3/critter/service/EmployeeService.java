@@ -44,7 +44,7 @@ public class EmployeeService {
     public List<Employee> findBySkillAndDays(Set<EmployeeSkill> skills, DayOfWeek dayOfWeek) {
         List<Employee> employees = employeeRepository.findDistinctBySkillsInAndDaysAvailable(skills, dayOfWeek);
 
-        employees=employees.stream().filter(employee -> employee.getSkills().containsAll(skills)).collect(Collectors.toList());
+        employees = employees.stream().filter(employee -> employee.getSkills().containsAll(skills)).collect(Collectors.toList());
 
         return employees;
     }
