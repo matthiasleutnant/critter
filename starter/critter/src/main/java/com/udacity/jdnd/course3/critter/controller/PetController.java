@@ -8,6 +8,7 @@ import com.udacity.jdnd.course3.critter.entity.Pet;
 import com.udacity.jdnd.course3.critter.service.CustomerService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class PetController {
     CustomerService customerService;
 
     @PostMapping
+    @ResponseStatus(code = HttpStatus.CREATED)
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
         return convertPetToPetDTO(petService.save(convertPetDTOToPet(petDTO)));
     }

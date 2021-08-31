@@ -12,6 +12,7 @@ import com.udacity.jdnd.course3.critter.service.CustomerService;
 import org.h2.engine.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
@@ -37,6 +38,7 @@ public class UserController {
     PetService petService;
 
     @PostMapping("/customer")
+    @ResponseStatus(code = HttpStatus.CREATED)
     public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO) {
         CustomerDTO customer = convertCustomerToCustomerDTO(
                 customerService.save(convertCustomerDTOToCustomer(customerDTO)));
