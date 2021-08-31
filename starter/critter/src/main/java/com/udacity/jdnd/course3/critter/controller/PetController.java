@@ -1,5 +1,6 @@
 package com.udacity.jdnd.course3.critter.controller;
 
+import com.udacity.jdnd.course3.critter.dto.ScheduleDTO;
 import com.udacity.jdnd.course3.critter.entity.Customer;
 import com.udacity.jdnd.course3.critter.service.PetService;
 import com.udacity.jdnd.course3.critter.dto.PetDTO;
@@ -35,26 +36,34 @@ public class PetController {
     }
 
     @GetMapping
-    public List<PetDTO> getPets(){
-        throw new UnsupportedOperationException();
+    public List<PetDTO> getPets() {
+        List<PetDTO> result = new ArrayList<>();
+        petService.getAll().forEach(
+                schedule -> {
+                    result.add(convertPetToPetDTO(schedule));
+                }
+        );
+        return result;
     }
 
     @GetMapping("/owner/{ownerId}")
     public List<PetDTO> getPetsByOwner(@PathVariable long ownerId) {
         List<PetDTO> result = new ArrayList<>();
         Customer owner = customerService.findCustomerById(ownerId);
-        owner.getPets().stream().forEach(pet -> {result.add(convertPetToPetDTO(pet));});
+        owner.getPets().stream().forEach(pet -> {
+            result.add(convertPetToPetDTO(pet));
+        });
         return result;
     }
 
-    private Pet convertPetDTOToPet(PetDTO petDTO){
+    private Pet convertPetDTOToPet(PetDTO petDTO) {
         Pet pet = new Pet();
         BeanUtils.copyProperties(petDTO, pet);
-        customerService.addPetToCustomerByCustomerId(pet,petDTO.getOwnerId());
+        customerService.addPetToCustomerByCustomerId(pet, petDTO.getOwnerId());
         return pet;
     }
 
-    private PetDTO convertPetToPetDTO(Pet pet){
+    private PetDTO convertPetToPetDTO(Pet pet) {
         PetDTO petDTO = new PetDTO();
         BeanUtils.copyProperties(pet, petDTO);
         petDTO.setOwnerId(pet.getCustomer().getId());
